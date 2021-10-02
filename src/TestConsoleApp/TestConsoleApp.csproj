@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DynamoDBApp.Shared\DynamoDBApp.Shared.csproj" />
+    <ProjectReference Include="..\DynamoDBApp.Shared\DynamoDBApp.Shared.csproj" />
   </ItemGroup>
 
 </Project>
