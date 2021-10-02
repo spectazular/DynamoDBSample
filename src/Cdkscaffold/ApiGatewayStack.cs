@@ -54,6 +54,18 @@ namespace Cdkscaffold
                 }
             });
 
+            var postApiIntegration = new LambdaIntegration(props.AddMusicLambdaHandler, new LambdaIntegrationOptions
+            {
+                RequestTemplates = new Dictionary<string, string>
+                {
+                    ["application/json"] = "{ \"statusCode\": \"200\" }"
+                }
+            });
+
+            var musicPostMethod = musicResource.AddMethod("POST", postApiIntegration);
+            var musicPutMethod = musicResource.AddMethod("PUT", postApiIntegration);
+
+
             new CfnOutput(this, "API Gateway API:", new CfnOutputProps() { Value = musicApi.Url });
             string urlPrefix = musicApi.Url.Remove(musicApi.Url.Length - 1);
             new CfnOutput(this, "Order Lambda Get:", new CfnOutputProps() { Value = urlPrefix + musicGetMethod.Resource.Path });

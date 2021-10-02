@@ -17,11 +17,16 @@ namespace Cdkscaffold
                 MusicTable = ddbStack.MusicTable
             });
 
-            new ApiGatewayStack(app, "MusicApiGatewayStack",new ApiGatewayStackProps 
-            { 
-                GetMusicLambdaHandler = musicGetApiStack.MusicGetApiLambdaHandler
+            LambdaPostMusicApiStack musicPostApiStack = new LambdaPostMusicApiStack(app, "PostMusicLambdaStack", new LambdaApiStackProps
+            {
+                MusicTable = ddbStack.MusicTable
             });
 
+            new ApiGatewayStack(app, "MusicApiGatewayStack",new ApiGatewayStackProps 
+            { 
+                GetMusicLambdaHandler = musicGetApiStack.MusicGetApiLambdaHandler,
+                AddMusicLambdaHandler = musicPostApiStack.MusicPostApiLambdaHandler
+            });
 
             app.Synth();
         }
