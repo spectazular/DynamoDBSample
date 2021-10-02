@@ -31,6 +31,8 @@ namespace Cdkscaffold
             musicApi.DeploymentStage = stage;
             Amazon.CDK.AWS.APIGateway.Resource musicResource = musicApi.Root.AddResource("music");
 
+            #region GET API
+
             LambdaIntegration getApiIntegration = new LambdaIntegration(props.GetMusicLambdaHandler, new LambdaIntegrationOptions
             {
                 RequestTemplates = new Dictionary<string, string>
@@ -54,6 +56,10 @@ namespace Cdkscaffold
                 }
             });
 
+            #endregion
+
+            #region POST API
+
             var postApiIntegration = new LambdaIntegration(props.AddMusicLambdaHandler, new LambdaIntegrationOptions
             {
                 RequestTemplates = new Dictionary<string, string>
@@ -62,9 +68,58 @@ namespace Cdkscaffold
                 }
             });
 
-            var musicPostMethod = musicResource.AddMethod("POST", postApiIntegration);
-            var musicPutMethod = musicResource.AddMethod("PUT", postApiIntegration);
+            Model musicModel = new Model(this, "POST-Validator-CDK", new ModelProps
+            {
+                RestApi = musicApi,
+                ContentType = "application/json",
+                Description = "Validation for POST body",
+                ModelName = "MusicModel",
+                Schema = new JsonSchema()
+                {
+                    Type = JsonSchemaType.OBJECT,
+                    Required = new string[] { "Artist", "SongTitle", "AlbumTitle", "Genre" },
+                    Properties = new Dictionary<string, IJsonSchema>()
+                    {
+                        ["Artist"] = new JsonSchema() { Type = "string" },
+                        ["SongTitle"] = new JsonSchema() { Type = "string" },
+                        ["AlbumTitle"] = new JsonSchema() { Type = "string" },
+                        ["Genre"] = new JsonSchema() { Type = "string" }
+                    }
+                }
+            });
 
+            musicResource.AddMethod("POST", postApiIntegration, new MethodOptions 
+            { 
+                RequestValidator = new RequestValidator(this, "postMusic-Validator", new RequestValidatorProps 
+                { 
+                    RestApi = musicApi,
+                    RequestValidatorName = "postMusic-Validator",
+                    ValidateRequestBody = true
+                }),
+                RequestModels = new Dictionary<string, IModel>() 
+                { 
+                    ["application/json"] = musicModel
+                }
+            });
+
+            musicResource.AddMethod("PUT", postApiIntegration, new MethodOptions
+            {
+                RequestValidator = new RequestValidator(this, "putMusic-Validator", new RequestValidatorProps
+                {
+                    RestApi = musicApi,
+                    RequestValidatorName = "putMusic-Validator",
+                    ValidateRequestBody = true
+                }),
+                RequestModels = new Dictionary<string, IModel>()
+                {
+                    ["application/json"] = musicModel
+                }
+            });
+
+            //var musicPostMethod = musicResource.AddMethod("POST", postApiIntegration);
+            //var musicPutMethod = musicResource.AddMethod("PUT", postApiIntegration);
+
+            #endregion
 
             new CfnOutput(this, "API Gateway API:", new CfnOutputProps() { Value = musicApi.Url });
             string urlPrefix = musicApi.Url.Remove(musicApi.Url.Length - 1);
