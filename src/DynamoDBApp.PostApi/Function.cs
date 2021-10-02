@@ -23,8 +23,9 @@ namespace DynamoDBApp.PostApi
             DynamoDBRepo<MusicModel> repo = new DynamoDBRepo<MusicModel>();
 
             LambdaLogger.Log("In handler");
+            LambdaLogger.Log("Method: " + item.HttpMethod.ToUpperInvariant());
 
-            if (item.HttpMethod.ToUpperInvariant() == "POST")
+            if ((item.HttpMethod.ToUpperInvariant() == "POST") || (item.HttpMethod.ToUpperInvariant() == "PUT"))
             {
                 retval = new APIGatewayProxyResponse
                 {
@@ -34,7 +35,7 @@ namespace DynamoDBApp.PostApi
                 try
                 {
                     MusicModel musicItem = JsonConvert.DeserializeObject<MusicModel>(item.Body);
-                    LambdaLogger.Log("Music object: " + item.Body);
+                    //LambdaLogger.Log("Music object: " + item.Body);
 
                     bool insertStatus = repo.InserRecord(musicItem);
 
