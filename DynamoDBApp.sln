@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoDBApp.DeleteApi", "src\DynamoDBApp.DeleteApi\DynamoDBApp.DeleteApi.csproj", "{076B4791-646B-41AE-84DC-8C8B010ADAC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{F366C7F2-A5F6-4098-A687-96B9C79FFBEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F366C7F2-A5F6-4098-A687-96B9C79FFBEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F366C7F2-A5F6-4098-A687-96B9C79FFBEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{076B4791-646B-41AE-84DC-8C8B010ADAC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{076B4791-646B-41AE-84DC-8C8B010ADAC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{076B4791-646B-41AE-84DC-8C8B010ADAC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{076B4791-646B-41AE-84DC-8C8B010ADAC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -43,16 +43,43 @@ namespace Cdkscaffold
 
             var musicGetMethod = musicResource.AddMethod("GET", getApiIntegration, new MethodOptions
             {
+                RequestValidator = new RequestValidator(this, "getMusic-Validator", new RequestValidatorProps
+                {
+                    RestApi = musicApi,
+                    RequestValidatorName = "getMusic-Validator",
+                    ValidateRequestParameters = true
+                }),
                 RequestParameters = new Dictionary<string, bool>()
                 {
                     { "method.request.querystring.artist", true },
                     { "method.request.querystring.songTitle", true }
-                },
-                RequestValidatorOptions = new RequestValidatorOptions
+                }
+            });
+
+            #endregion
+
+            #region DELETE API
+
+            LambdaIntegration deleteApiIntegration = new LambdaIntegration(props.DeleteMusicLambdaHandler, new LambdaIntegrationOptions
+            {
+                RequestTemplates = new Dictionary<string, string>
                 {
-                    RequestValidatorName = "getMusic-Validator",
-                    ValidateRequestParameters = true,
-                    ValidateRequestBody = false
+                    ["application/json"] = "{ \"statusCode\": \"200\" }"
+                }
+            });
+
+            musicResource.AddMethod("DELETE", deleteApiIntegration, new MethodOptions
+            {
+                RequestValidator = new RequestValidator(this, "deleteMusic-Validator", new RequestValidatorProps 
+                { 
+                    RestApi = musicApi,
+                    RequestValidatorName = "deleteMusic-Validator",
+                    ValidateRequestParameters = true                    
+                }),
+                RequestParameters = new Dictionary<string, bool>()
+                {
+                    { "method.request.querystring.artist", true },
+                    { "method.request.querystring.songTitle", true }
                 }
             });
 
@@ -115,9 +142,6 @@ namespace Cdkscaffold
                     ["application/json"] = musicModel
                 }
             });
-
-            //var musicPostMethod = musicResource.AddMethod("POST", postApiIntegration);
-            //var musicPutMethod = musicResource.AddMethod("PUT", postApiIntegration);
 
             #endregion
 

@@ -15,7 +15,7 @@ namespace Cdkscaffold
             MusicGetApiLambdaHandler = new Function(this, "CDKMusicGetApi", new FunctionProps
             {
                 Runtime = Runtime.DOTNET_CORE_3_1,
-                Code = Code.FromAsset("src//DynamoDBApp.GetApi//bin//Debug//netcoreapp3.1"),
+                Code = Code.FromAsset("src//DynamoDBApp.GetApi//bin//Release//netcoreapp3.1"),
                 Handler = "DynamoDBApp.GetApi::DynamoDBApp.GetApi.Function::FunctionHandler",
                 FunctionName = "MusicGetAPI",
                 Timeout = Duration.Seconds(30)

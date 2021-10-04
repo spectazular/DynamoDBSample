@@ -7,16 +7,21 @@ using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using DynamoDBApp.Shared.Models;
 using DynamoDBApp.Shared.Repos.Concrete;
-using Newtonsoft.Json;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
-namespace DynamoDBApp.GetApi
+namespace DynamoDBApp.DeleteApi
 {
     public class Function
     {
         
+        /// <summary>
+        /// A simple function that takes a string and does a ToUpper
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public APIGatewayProxyResponse FunctionHandler(APIGatewayProxyRequest item, ILambdaContext context)
         {
             APIGatewayProxyResponse retval = new APIGatewayProxyResponse();
@@ -24,7 +29,7 @@ namespace DynamoDBApp.GetApi
 
             LambdaLogger.Log("In handler");
 
-            if (item.HttpMethod.ToUpperInvariant() == "GET")
+            if (item.HttpMethod.ToUpperInvariant() == "DELETE")
             {
                 retval = new APIGatewayProxyResponse
                 {
@@ -39,12 +44,11 @@ namespace DynamoDBApp.GetApi
                     LambdaLogger.Log("Artist parameter value: " + artist);
                     LambdaLogger.Log("SongTitle parameter value: " + songTitle);
 
-                    MusicModel record = repo.GetRecord(artist, songTitle);
+                    bool deleted = repo.DeleteRecord(artist, songTitle);
 
-                    if(record != null)
+                    if (deleted ==true)
                     {
                         retval.StatusCode = (int)HttpStatusCode.OK;
-                        retval.Body = JsonConvert.SerializeObject(record);
                     }
                     else
                     {
@@ -52,10 +56,10 @@ namespace DynamoDBApp.GetApi
                         retval.Body = "Record not found";
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     retval.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    LambdaLogger.Log("Music GET Handler error: " + ex.ToString());
+                    LambdaLogger.Log("Music Delete Handler error: " + ex.ToString());
                 }
             }
 

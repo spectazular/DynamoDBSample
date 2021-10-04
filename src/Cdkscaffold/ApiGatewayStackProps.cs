@@ -9,5 +9,6 @@ namespace Cdkscaffold
     {
         public Function GetMusicLambdaHandler { get; set; }
         public Function AddMusicLambdaHandler { get; set; }
+        public Function DeleteMusicLambdaHandler { get; set; }
     }
 }

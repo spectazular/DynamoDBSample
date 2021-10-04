@@ -12,20 +12,23 @@ namespace Cdkscaffold
             var app = new App();
             DynamoDBStack ddbStack = new DynamoDBStack(app, "DynamoDBStack");
 
-            LambdaGetMusicApiStack musicGetApiStack = new LambdaGetMusicApiStack(app, "GetMusicLambdaStack", new LambdaApiStackProps 
+            LambdaApiStackProps lambdaStackProps = new LambdaApiStackProps()
             { 
                 MusicTable = ddbStack.MusicTable
-            });
+            };
 
-            LambdaPostMusicApiStack musicPostApiStack = new LambdaPostMusicApiStack(app, "PostMusicLambdaStack", new LambdaApiStackProps
-            {
-                MusicTable = ddbStack.MusicTable
-            });
+
+            LambdaGetMusicApiStack musicGetApiStack = new LambdaGetMusicApiStack(app, "GetMusicLambdaStack", lambdaStackProps);
+
+            LambdaPostMusicApiStack musicPostApiStack = new LambdaPostMusicApiStack(app, "PostMusicLambdaStack", lambdaStackProps);
+
+            LambdaDeleteMusicApiStack musicDeleteApiStack = new LambdaDeleteMusicApiStack(app, "DeleteMusicLambdaStack", lambdaStackProps);
 
             new ApiGatewayStack(app, "MusicApiGatewayStack",new ApiGatewayStackProps 
             { 
                 GetMusicLambdaHandler = musicGetApiStack.MusicGetApiLambdaHandler,
-                AddMusicLambdaHandler = musicPostApiStack.MusicPostApiLambdaHandler
+                AddMusicLambdaHandler = musicPostApiStack.MusicPostApiLambdaHandler,
+                DeleteMusicLambdaHandler = musicDeleteApiStack.MusicDeleteApiLambdaHandler
             });
 
             app.Synth();
