@@ -31,57 +31,28 @@ namespace Cdkscaffold
             musicApi.DeploymentStage = stage;
             Amazon.CDK.AWS.APIGateway.Resource musicResource = musicApi.Root.AddResource("music");
 
-            #region GET API
+
+
+            #region GET & DELETE APIs
+
+            Dictionary<string, string> requestTemplate = new Dictionary<string, string>
+            {
+                ["application/json"] = "{ \"statusCode\": \"200\" }"
+            };
 
             LambdaIntegration getApiIntegration = new LambdaIntegration(props.GetMusicLambdaHandler, new LambdaIntegrationOptions
             {
-                RequestTemplates = new Dictionary<string, string>
-                {
-                    ["application/json"] = "{ \"statusCode\": \"200\" }"
-                }
+                RequestTemplates = requestTemplate
             });
 
-            var musicGetMethod = musicResource.AddMethod("GET", getApiIntegration, new MethodOptions
-            {
-                RequestValidator = new RequestValidator(this, "getMusic-Validator", new RequestValidatorProps
-                {
-                    RestApi = musicApi,
-                    RequestValidatorName = "getMusic-Validator",
-                    ValidateRequestParameters = true
-                }),
-                RequestParameters = new Dictionary<string, bool>()
-                {
-                    { "method.request.querystring.artist", true },
-                    { "method.request.querystring.songTitle", true }
-                }
-            });
-
-            #endregion
-
-            #region DELETE API
+            var musicGetMethod = musicResource.AddMethod("GET", getApiIntegration, GetDeleteMethodOptions("getMusic-Validator", musicApi));
 
             LambdaIntegration deleteApiIntegration = new LambdaIntegration(props.DeleteMusicLambdaHandler, new LambdaIntegrationOptions
             {
-                RequestTemplates = new Dictionary<string, string>
-                {
-                    ["application/json"] = "{ \"statusCode\": \"200\" }"
-                }
+                RequestTemplates = requestTemplate
             });
 
-            musicResource.AddMethod("DELETE", deleteApiIntegration, new MethodOptions
-            {
-                RequestValidator = new RequestValidator(this, "deleteMusic-Validator", new RequestValidatorProps 
-                { 
-                    RestApi = musicApi,
-                    RequestValidatorName = "deleteMusic-Validator",
-                    ValidateRequestParameters = true                    
-                }),
-                RequestParameters = new Dictionary<string, bool>()
-                {
-                    { "method.request.querystring.artist", true },
-                    { "method.request.querystring.songTitle", true }
-                }
-            });
+            musicResource.AddMethod("DELETE", deleteApiIntegration, GetDeleteMethodOptions("deleteMusic-Validator", musicApi));
 
             #endregion
 
@@ -148,6 +119,26 @@ namespace Cdkscaffold
             new CfnOutput(this, "API Gateway API:", new CfnOutputProps() { Value = musicApi.Url });
             string urlPrefix = musicApi.Url.Remove(musicApi.Url.Length - 1);
             new CfnOutput(this, "Music Lambda API Gateway Link:", new CfnOutputProps() { Value = urlPrefix + musicGetMethod.Resource.Path });
+        }
+
+        private MethodOptions GetDeleteMethodOptions(string validatorName, RestApi restApi)
+        {
+            MethodOptions retval = new MethodOptions
+            {
+                RequestValidator = new RequestValidator(this, validatorName, new RequestValidatorProps
+                {
+                    RestApi = restApi,
+                    RequestValidatorName = validatorName,
+                    ValidateRequestParameters = true
+                }),
+                RequestParameters = new Dictionary<string, bool>()
+                {
+                    { "method.request.querystring.artist", true },
+                    { "method.request.querystring.songTitle", true }
+                }
+            };
+
+            return retval;
         }
     }
 }
