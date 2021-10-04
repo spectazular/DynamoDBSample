@@ -85,7 +85,7 @@ namespace Cdkscaffold
 
             #endregion
 
-            #region POST API
+            #region POST + PUT APIs
 
             var postApiIntegration = new LambdaIntegration(props.AddMusicLambdaHandler, new LambdaIntegrationOptions
             {
