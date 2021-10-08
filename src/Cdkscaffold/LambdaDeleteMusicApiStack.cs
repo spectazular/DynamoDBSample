@@ -18,7 +18,8 @@ namespace Cdkscaffold
                 Code = Code.FromAsset("src//DynamoDBApp.DeleteApi//bin//Release//netcoreapp3.1"),
                 Handler = "DynamoDBApp.DeleteApi::DynamoDBApp.DeleteApi.Function::FunctionHandler",
                 FunctionName = "MusicDeleteAPI",
-                Timeout = Duration.Seconds(30)
+                Timeout = Duration.Seconds(30),
+                MemorySize = 5000
             });
 
             props.MusicTable.GrantFullAccess(MusicDeleteApiLambdaHandler);

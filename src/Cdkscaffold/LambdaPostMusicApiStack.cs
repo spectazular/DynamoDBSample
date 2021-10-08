@@ -18,7 +18,8 @@ namespace Cdkscaffold
                 Code = Code.FromAsset("src//DynamoDBApp.PostApi//bin//Release//netcoreapp3.1"),
                 Handler = "DynamoDBApp.PostApi::DynamoDBApp.PostApi.Function::FunctionHandler",
                 FunctionName = "MusicPostAPI",
-                Timeout = Duration.Seconds(30)
+                Timeout = Duration.Seconds(30),
+                MemorySize = 5000
             });
 
             props.MusicTable.GrantFullAccess(MusicPostApiLambdaHandler);
