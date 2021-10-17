@@ -19,7 +19,8 @@ namespace Cdkscaffold
                 Handler = "DynamoDBApp.GetApi::DynamoDBApp.GetApi.Function::FunctionHandler",
                 FunctionName = "MusicGetAPI",
                 Timeout = Duration.Seconds(30),
-                MemorySize = 1024
+                MemorySize = 1024,
+                Architecture = Architecture.ARM_64
             });
 
             props.MusicTable.GrantFullAccess(MusicGetApiLambdaHandler);
